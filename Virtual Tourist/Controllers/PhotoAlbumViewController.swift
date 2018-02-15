@@ -30,6 +30,22 @@ class PhotoAlbumViewController: Utils, NSFetchedResultsControllerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        configUI()
+        configMap()
+        
+        let savedPhotos = loadSavedPhotos()
+        if savedPhotos != nil && savedPhotos?.count != nil {
+            loadingLabel.isHidden = true
+            photos = savedPhotos!
+        } else {
+            requestFlickrPhotos()
+        }
+    }
+    
+    func configUI() {
+//        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(deleteSelectedPhotos))
+//        navigationItem.rightBarButtonItem?.isEnabled = false
+        navigationItem.rightBarButtonItem = self.editButtonItem
         collectionView.delegate = self
         collectionView.dataSource = self
         
@@ -41,19 +57,16 @@ class PhotoAlbumViewController: Utils, NSFetchedResultsControllerDelegate {
         collectionFlow.itemSize = CGSize(width: dimension, height: dimension)
         self.collectionView.register(UINib(nibName: "PhotoCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "PhotoCell")
         loadingLabel.isHidden = false
-        configMap()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        let savedPhotos = loadSavedPhotos()
-        if savedPhotos != nil && savedPhotos?.count != nil {
-            loadingLabel.isHidden = true
-            photos = savedPhotos!
-        } else {
-            requestFlickrPhotos()
-        }
+    func configMap() {
+        let latitudeDelta = 0.05
+        let longitudeDelta = 0.05
+        let span = MKCoordinateSpanMake(latitudeDelta, longitudeDelta)
+        let region = MKCoordinateRegionMake(touchedMapPin.coordinate, span)
+        mapView.setRegion(region, animated: true)
+        mapView.isUserInteractionEnabled = false
+        mapView.addAnnotation(touchedMapPin)
     }
     
     func requestFlickrPhotos() {
@@ -73,7 +86,7 @@ class PhotoAlbumViewController: Utils, NSFetchedResultsControllerDelegate {
         FlickrClient.getFlickrImages(location: location) { (error, flickrPhotos) in
    
             guard error == nil else {
-                Utils.errorAlert(title: "Couldn't load from Flickr", message: "Having trouble getting the flickr request.", view: self)
+                Utils.errorAlert(title: "Couldn't load from Flickr", message: "We are having trouble getting the flickr request.", view: self)
                 return
             }
             
@@ -83,6 +96,8 @@ class PhotoAlbumViewController: Utils, NSFetchedResultsControllerDelegate {
                     self.photos = self.loadSavedPhotos()!
                     self.loadingLabel.isHidden = true
                     self.newCollectionButton.isEnabled = true
+                } else {
+                    Utils.errorAlert(title: "Error!", message: "We couldn't find any photos from flickr at this location 😔", view: self)
                 }
             }
         }
@@ -103,16 +118,6 @@ class PhotoAlbumViewController: Utils, NSFetchedResultsControllerDelegate {
         } catch {
             return nil
         }
-    }
-    
-    func configMap() {
-        let latitudeDelta = 0.05
-        let longitudeDelta = 0.05
-        let span = MKCoordinateSpanMake(latitudeDelta, longitudeDelta)
-        let region = MKCoordinateRegionMake(touchedMapPin.coordinate, span)
-        mapView.setRegion(region, animated: true)
-        mapView.isUserInteractionEnabled = false
-        mapView.addAnnotation(touchedMapPin)
     }
     
     //Fetch Results
@@ -141,6 +146,51 @@ class PhotoAlbumViewController: Utils, NSFetchedResultsControllerDelegate {
         }
     }
     
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: animated)
+        if editing {
+            collectionView.allowsMultipleSelection = true
+        } else {
+            collectionView.allowsMultipleSelection = false
+        }
+    }
+    
+    @objc func deleteSelectedPhotos() {
+        removeCoreDataPhotos {
+            DispatchQueue.main.async {
+                self.isEditing = false
+                for cell in self.collectionView.visibleCells {
+                    cell.alpha = 1.0
+                }
+//                self.navigationItem.rightBarButtonItem?.isEnabled = true
+                self.collectionView.allowsMultipleSelection = false
+                self.collectionView.reloadData()
+            }
+        }
+    }
+    
+    func removeCoreDataPhotos(completion: @escaping () -> Void) {
+        let indexes = getIndexesFromSelectedIndexPath().sorted { return $0 < $1 }
+        
+        self.collectionView.allowsMultipleSelection = false
+        
+        var counter = 0
+        
+        for index in indexes {
+            let indexPath = IndexPath(row: index, section: 0)
+            collectionView.deselectItem(at: indexPath, animated: true)
+            CoreDataStack.shared.context.delete(photos[index - counter])
+            photos.remove(at: index - counter)
+            counter += 1
+        }
+        
+        self.collectionView.allowsMultipleSelection = true
+        
+        CoreDataStack.shared.save()
+        
+        completion()
+    }
+    
     @IBAction func newCollectionTouched(_ sender: Any) {
         requestFlickrPhotos()
     }
@@ -160,17 +210,17 @@ extension PhotoAlbumViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        let cell = collectionView.cellForItem(at: indexPath)
+        let cell = collectionView.cellForItem(at: indexPath) as! PhotoCollectionViewCell
         guard self.isEditing == true else { return }
-        cell?.contentView.alpha = 0.5
+        cell.contentView.alpha = 0.5
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         
-        let cell = collectionView.cellForItem(at: indexPath)
+        let cell = collectionView.cellForItem(at: indexPath) as! PhotoCollectionViewCell
         guard self.isEditing == true else { return }
-        
-        cell?.contentView.alpha = 1.0
+
+        cell.contentView.alpha = 1.0
     }
 }
 
