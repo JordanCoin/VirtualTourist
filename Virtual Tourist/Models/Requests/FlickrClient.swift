@@ -13,7 +13,8 @@ class FlickrClient: NSObject {
     
     static let shared = FlickrClient()
     
-    private static func requestImages(location: CLLocation, completion: @escaping (_ error: NSError?, _ flickrPhoto: [FlickrPhoto]?) -> Void) {
+    // MARK: - Requesting Flickr Photos from API
+    private static func requestPhotos(location: CLLocation, completion: @escaping (_ error: NSError?, _ flickrPhoto: [FlickrPhoto]?) -> Void) {
         
         let latitude = location.coordinate.latitude
         let longitude = location.coordinate.longitude
@@ -70,11 +71,12 @@ class FlickrClient: NSObject {
         task.resume()
     }
     
-    static func getFlickrImages(location: CLLocation, completion: @escaping (_ error: Error?, _ flickrPhoto: [FlickrPhoto]?) -> Void) {
+    // MARK: - Method to Randomize Flickr Photo Request
+    static func getFlickrPhotos(location: CLLocation, completion: @escaping (_ error: Error?, _ flickrPhoto: [FlickrPhoto]?) -> Void) {
         
         var flickrRequestResults: [FlickrPhoto] = []
         
-        FlickrClient.requestImages(location: location) { (error: Error?, flickrPhotos: [FlickrPhoto]?) in
+        FlickrClient.requestPhotos(location: location) { (error: Error?, flickrPhotos: [FlickrPhoto]?) in
             
             guard (error == nil) else {
                 completion(error!, nil)

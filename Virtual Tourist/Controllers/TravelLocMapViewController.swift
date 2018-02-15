@@ -27,7 +27,6 @@ class TravelLocMapViewController: Utils, MKMapViewDelegate, NSFetchedResultsCont
     func configView() {
         longPressGestureRecognizer.delegate = self
         mapView.delegate = self
-        
         mapView.addGestureRecognizer(longPressGestureRecognizer)
     }
     
@@ -65,7 +64,6 @@ class TravelLocMapViewController: Utils, MKMapViewDelegate, NSFetchedResultsCont
             }
             return pins
         } catch {
-            print("Couldn't find any saved pins")
             return nil
         }
     }
@@ -110,7 +108,6 @@ class TravelLocMapViewController: Utils, MKMapViewDelegate, NSFetchedResultsCont
     }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        print("Navigate to the Photo Album View")
         let mapAnnotation = view.annotation! as? MKPointAnnotation
         self.touchedMapPin = mapAnnotation
         performSegue(withIdentifier: "PhotoAlbumViewController", sender: self)
@@ -140,6 +137,7 @@ class TravelLocMapViewController: Utils, MKMapViewDelegate, NSFetchedResultsCont
         photoAlbumController?.touchedMapPin = touchedMapPin
     }
 }
+
 // MARK: - GestureReocgnizerDelegate Method
 extension TravelLocMapViewController: UIGestureRecognizerDelegate {
     
@@ -163,9 +161,6 @@ extension TravelLocMapViewController: UIGestureRecognizerDelegate {
             
             // We are adding the pin to core data
             self.addToCoreData(pin: mapPointAnnotation)
-            
-            // Call flickr request for a photo at the longitude and latitude  most with the paramaters longitude and latitude of the photo
-            // save the flikr response to core data as a data object
             
             for pin in self.pins {
                 

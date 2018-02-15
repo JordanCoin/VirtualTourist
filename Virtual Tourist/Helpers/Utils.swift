@@ -11,6 +11,7 @@ import MapKit
 import SystemConfiguration
 
 class Utils: UIViewController {
+    // MARK: - Error Handling
     static func errorAlert(title: String, message: String, view: UIViewController) {
         DispatchQueue.main.async {
             let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
@@ -27,7 +28,7 @@ class Utils: UIViewController {
         }
     }
 }
-
+// MARK: - Connecting to Network
 // Source: StackOverflow
 public class Reachability {
     

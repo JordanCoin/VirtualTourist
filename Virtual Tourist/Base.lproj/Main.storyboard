@@ -65,13 +65,6 @@
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
-                                <label key="backgroundView" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Loading Photos..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ZSq-6i-eUS">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="428"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="19"/>
-                                    <color key="textColor" red="0.48593027280000001" green="0.5130858532" blue="0.56460184010000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    <nil key="highlightedColor"/>
-                                </label>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="PhotoCell" id="RKZ-SH-g6n">
                                         <rect key="frame" x="0.0" y="0.0" width="124" height="126"/>
@@ -106,6 +99,12 @@
                                     <constraint firstAttribute="height" constant="131" id="Ekw-6g-4Z4"/>
                                 </constraints>
                             </mapView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Loading Photos..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZSq-6i-eUS">
+                                <rect key="frame" x="112.5" y="322" width="150" height="23"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="19"/>
+                                <color key="textColor" red="0.48593027280000001" green="0.5130858532" blue="0.56460184010000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -113,7 +112,9 @@
                             <constraint firstItem="0rw-Fg-s1O" firstAttribute="top" secondItem="sed-gh-Agp" secondAttribute="bottom" id="61p-mS-Wwd"/>
                             <constraint firstItem="E1M-pz-P6C" firstAttribute="top" secondItem="0rw-Fg-s1O" secondAttribute="bottom" id="CHL-Sm-ODM"/>
                             <constraint firstItem="0rw-Fg-s1O" firstAttribute="leading" secondItem="J5C-1S-K5F" secondAttribute="leading" id="FGi-23-TPt"/>
+                            <constraint firstItem="ZSq-6i-eUS" firstAttribute="centerX" secondItem="0hS-zc-ERY" secondAttribute="centerX" id="Rux-pi-YqM"/>
                             <constraint firstItem="0rw-Fg-s1O" firstAttribute="trailing" secondItem="J5C-1S-K5F" secondAttribute="trailing" id="VYa-kX-r87"/>
+                            <constraint firstItem="ZSq-6i-eUS" firstAttribute="centerY" secondItem="0hS-zc-ERY" secondAttribute="centerY" id="ZXe-Xd-JwZ"/>
                             <constraint firstItem="E1M-pz-P6C" firstAttribute="trailing" secondItem="J5C-1S-K5F" secondAttribute="trailing" id="ibL-Jc-IQR"/>
                             <constraint firstItem="E1M-pz-P6C" firstAttribute="leading" secondItem="J5C-1S-K5F" secondAttribute="leading" id="lGd-Vg-NZv"/>
                             <constraint firstItem="E1M-pz-P6C" firstAttribute="bottom" secondItem="J5C-1S-K5F" secondAttribute="bottom" id="p08-yD-1M1"/>

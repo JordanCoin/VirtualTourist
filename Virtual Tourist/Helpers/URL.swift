@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 
+// MARK: - Image Catche URL Extension
 extension URL {
     public typealias ImageCacheCompletion = (UIImage, Data?) -> Void
     

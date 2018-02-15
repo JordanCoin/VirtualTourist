@@ -12,6 +12,12 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+
+    override var isSelected: Bool {
+        didSet {
+            self.alpha = self.isSelected ? 0.5 : 1.0
+        }
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -28,10 +34,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    //Download Images
-    
     private func downloadImage(_ photo: Photo) -> Void {
-        
         URL(string: photo.imageURL!)!.fetchImage(imageKey: photo.imageURL!) { (image, data)  in
             DispatchQueue.main.async {
                 self.imageView.image = image
@@ -39,20 +42,8 @@ class PhotoCollectionViewCell: UICollectionViewCell {
                 self.saveImageDataToCoreData(photo: photo, imageData: data! as NSData)
             }
         }
-        
-//        URLSession.shared.dataTask(with: URL(string: photo.imageURL!)!) { (data, response, error) in
-//            if error == nil {
-//
-//                DispatchQueue.main.async {
-//                    self.imageView.image = UIImage(data: data! as Data)
-//                    self.activityIndicator.stopAnimating()
-//                    self.saveImageDataToCoreData(photo: photo, imageData: data! as NSData)
-//                }
-//            }
-//        }.resume()
     }
     
-    //Save Images
     func saveImageDataToCoreData(photo: Photo, imageData: NSData) {
         photo.imageData = imageData
         CoreDataStack.shared.save()
