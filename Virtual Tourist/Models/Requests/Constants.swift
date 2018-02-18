@@ -9,7 +9,7 @@
 import Foundation
 
 struct Constants {
-    static let ApiKey = ""
+    static let ApiKey = "cb8d19cb85cd2d28051d75e1ac505b59"
     static let EndPoint = "https://api.flickr.com/services/rest/"
     static let SearchPoint = "flickr.photos.search"
     static let DataFormat = "json"

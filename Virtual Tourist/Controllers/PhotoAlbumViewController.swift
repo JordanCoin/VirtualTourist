@@ -20,6 +20,7 @@ class PhotoAlbumViewController: Utils, NSFetchedResultsControllerDelegate {
     
     var touchedPin: Pin!
     var touchedMapPin: MKPointAnnotation!
+    var pinFetchResults: NSFetchRequest<Photo>?
     var photos = [Photo]() {
         didSet {
             DispatchQueue.main.async {
@@ -33,10 +34,13 @@ class PhotoAlbumViewController: Utils, NSFetchedResultsControllerDelegate {
         configUI()
         configMap()
         
-        let savedPhotos = loadSavedPhotos()
-        if savedPhotos != nil && savedPhotos?.count != nil {
+        guard let savedPhotos = loadSavedPhotos() else {
+            return
+        }
+
+        if savedPhotos.count > 0 {
             loadingLabel.isHidden = true
-            photos = savedPhotos!
+            photos = savedPhotos
         } else {
             requestFlickrPhotos()
         }
@@ -47,7 +51,7 @@ class PhotoAlbumViewController: Utils, NSFetchedResultsControllerDelegate {
         self.collectionView.allowsMultipleSelection = true
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(deleteSelectedPhotos))
-        
+
         collectionView.delegate = self
         collectionView.dataSource = self
         
@@ -110,7 +114,6 @@ class PhotoAlbumViewController: Utils, NSFetchedResultsControllerDelegate {
     }
     
     func loadSavedPhotos() -> [Photo]? {
-        
         do {
             var photos: [Photo] = []
             let fetchedResultsController = self.fetchedResultsController()
@@ -130,9 +133,7 @@ class PhotoAlbumViewController: Utils, NSFetchedResultsControllerDelegate {
         
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Photo")
         fetchRequest.sortDescriptors = []
-        
         fetchRequest.predicate = NSPredicate(format: "pin = %@", argumentArray: [touchedPin!])
-        
         return NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: CoreDataStack.shared.context, sectionNameKeyPath: nil, cacheName: nil)
     }
     
@@ -177,7 +178,6 @@ class PhotoAlbumViewController: Utils, NSFetchedResultsControllerDelegate {
     @IBAction func newCollectionTouched(_ sender: Any) {
         requestFlickrPhotos()
     }
-    
 }
 
 extension PhotoAlbumViewController: UICollectionViewDelegate {

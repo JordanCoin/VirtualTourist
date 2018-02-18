@@ -70,7 +70,6 @@ class TravelLocMapViewController: Utils, MKMapViewDelegate, NSFetchedResultsCont
     
     func addToCoreData(pin: MKPointAnnotation) {
         let pin = Pin(annotation: pin, context: CoreDataStack.shared.context)
-        print(pin.latitude, pin.longitude)
         pins.append(pin)
         CoreDataStack.shared.save()
     }
@@ -80,7 +79,7 @@ class TravelLocMapViewController: Utils, MKMapViewDelegate, NSFetchedResultsCont
         
         geoCoder.reverseGeocodeLocation(location) { (placemarks: [CLPlacemark]?, error: Error?) in
             guard error == nil else {
-                Utils.errorAlert(title: "Couldn't Find Location", message: "(error.debugDescription), Please Try Again", view: self)
+                Utils.errorAlert(title: "Couldn't Find Location", message: "\(error.debugDescription), Please Try Again", view: self)
                 return
             }
             guard placemarks != nil else {
@@ -120,7 +119,6 @@ class TravelLocMapViewController: Utils, MKMapViewDelegate, NSFetchedResultsCont
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
         let photoAlbumController = segue.destination as? PhotoAlbumViewController
         var touchedPin: Pin?
         
@@ -175,7 +173,6 @@ extension TravelLocMapViewController: UIGestureRecognizerDelegate {
             
             DispatchQueue.main.async {
                 self.mapView.addAnnotation(mapPointAnnotation)
-                self.performSegue(withIdentifier: "PhotoAlbumViewController", sender: self)
             }
         })
         return true
